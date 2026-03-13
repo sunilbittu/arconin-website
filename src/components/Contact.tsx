@@ -38,22 +38,12 @@ export default function Contact() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-
-    const payload = {
-      access_key: WEB3FORMS_KEY,
-      subject: "New inquiry from Arconin website",
-      from_name: "Arconin Website",
-      name: formData.get("name"),
-      email: formData.get("email"),
-      project_type: formData.get("project_type"),
-      message: formData.get("message"),
-    };
+    formData.append("access_key", WEB3FORMS_KEY);
 
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       const data = await res.json();
