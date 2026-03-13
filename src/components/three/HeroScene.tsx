@@ -1,7 +1,7 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Line } from "@react-three/drei";
-import type { Group, Mesh } from "three";
+import { Line } from "@react-three/drei";
+import type { Group } from "three";
 import * as THREE from "three";
 
 function MouseTracker({ children }: { children: React.ReactNode }) {
@@ -11,8 +11,8 @@ function MouseTracker({ children }: { children: React.ReactNode }) {
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.y += (mouse.current.x * 0.3 - groupRef.current.rotation.y) * 0.05;
-    groupRef.current.rotation.x += (mouse.current.y * 0.2 - groupRef.current.rotation.x) * 0.05;
+    groupRef.current.rotation.y += (mouse.current.x * 0.15 - groupRef.current.rotation.y) * 0.03;
+    groupRef.current.rotation.x += (mouse.current.y * 0.08 - groupRef.current.rotation.x) * 0.03;
   });
 
   return (
@@ -23,7 +23,6 @@ function MouseTracker({ children }: { children: React.ReactNode }) {
         mouse.current.y = -(e.clientY / size.height - 0.5) * 2;
       }}
     >
-      {/* Invisible plane to capture pointer events */}
       <mesh visible={false}>
         <planeGeometry args={[50, 50]} />
         <meshBasicMaterial transparent opacity={0} />
@@ -33,123 +32,246 @@ function MouseTracker({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ArchWireframe() {
+// Wireframe room outline
+function RoomWireframe() {
   const groupRef = useRef<Group>(null);
 
   useFrame((state) => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-    groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.03) * 0.1;
+    groupRef.current.rotation.y = Math.PI * -0.15 + Math.sin(state.clock.elapsedTime * 0.03) * 0.05;
   });
 
-  const columns = useMemo(() => {
-    const cols: { x: number; z: number; h: number }[] = [];
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      cols.push({
-        x: Math.cos(angle) * 2.5,
-        z: Math.sin(angle) * 2.5,
-        h: 2.5 + Math.sin(i * 0.8) * 0.8,
-      });
-    }
-    return cols;
-  }, []);
+  const w = 5; // room width
+  const d = 4; // room depth
+  const h = 3; // room height
 
-  const sharedMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#b8935f",
-        emissive: "#a67c47",
-        emissiveIntensity: 0.3,
-        metalness: 0.8,
-        roughness: 0.2,
-      }),
-    []
-  );
+  // Room edges — floor, back wall, left wall (open front & right for visibility)
+  const roomLines: [number, number, number][][] = [
+    // Floor
+    [[-w/2, 0, -d/2], [w/2, 0, -d/2]],
+    [[w/2, 0, -d/2], [w/2, 0, d/2]],
+    [[w/2, 0, d/2], [-w/2, 0, d/2]],
+    [[-w/2, 0, d/2], [-w/2, 0, -d/2]],
+    // Back wall
+    [[-w/2, 0, -d/2], [-w/2, h, -d/2]],
+    [[w/2, 0, -d/2], [w/2, h, -d/2]],
+    [[-w/2, h, -d/2], [w/2, h, -d/2]],
+    // Left wall
+    [[-w/2, 0, -d/2], [-w/2, 0, d/2]],
+    [[-w/2, 0, d/2], [-w/2, h, d/2]],
+    [[-w/2, h, d/2], [-w/2, h, -d/2]],
+    // Ceiling edges
+    [[-w/2, h, -d/2], [-w/2, h, d/2]],
+    [[w/2, h, -d/2], [w/2, h, d/2]],
+    [[-w/2, h, d/2], [w/2, h, d/2]],
+  ];
 
   return (
-    <group ref={groupRef} position={[0, -0.5, 0]}>
-      {columns.map((col, i) => (
-        <group key={i} position={[col.x, 0, col.z]}>
-          <mesh material={sharedMaterial}>
-            <cylinderGeometry args={[0.04, 0.04, col.h, 6]} />
-          </mesh>
-          <mesh position={[0, col.h / 2, 0]} material={sharedMaterial}>
-            <boxGeometry args={[0.2, 0.06, 0.2]} />
-          </mesh>
-        </group>
+    <group ref={groupRef} position={[0, -1.2, 0]}>
+      {roomLines.map((pts, i) => (
+        <Line key={`room-${i}`} points={pts} color="#b8935f" transparent opacity={0.15} lineWidth={1} />
       ))}
-
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, -1.25, 0]} material={sharedMaterial}>
-        <torusGeometry args={[2.5, 0.02, 6, 32]} />
-      </mesh>
-
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 1.8, 0]} material={sharedMaterial}>
-        <torusGeometry args={[2.5, 0.02, 6, 32]} />
-      </mesh>
-
-      {[0, 1, 2, 3].map((i) => {
-        const angle = (i / 4) * Math.PI * 2;
-        return (
-          <mesh
-            key={`beam-${i}`}
-            position={[Math.cos(angle) * 2.5, 1.8, Math.sin(angle) * 2.5]}
-            rotation={[0, -angle, 0]}
-            material={sharedMaterial}
-          >
-            <boxGeometry args={[0.5, 0.02, 0.02]} />
-          </mesh>
-        );
-      })}
     </group>
   );
 }
 
-function GlassStructure() {
-  const meshRef = useRef<Mesh>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.y = state.clock.elapsedTime * 0.08;
-    meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.05) * 0.15;
-  });
+// Wireframe sofa
+function Sofa() {
+  const lines: [number, number, number][][] = [
+    // Seat base
+    [[-1.2, 0, 0.8], [1.2, 0, 0.8]],
+    [[1.2, 0, 0.8], [1.2, 0, 1.6]],
+    [[1.2, 0, 1.6], [-1.2, 0, 1.6]],
+    [[-1.2, 0, 1.6], [-1.2, 0, 0.8]],
+    // Seat top
+    [[-1.2, 0.4, 0.8], [1.2, 0.4, 0.8]],
+    [[1.2, 0.4, 0.8], [1.2, 0.4, 1.6]],
+    [[1.2, 0.4, 1.6], [-1.2, 0.4, 1.6]],
+    [[-1.2, 0.4, 1.6], [-1.2, 0.4, 0.8]],
+    // Verticals
+    [[-1.2, 0, 0.8], [-1.2, 0.4, 0.8]],
+    [[1.2, 0, 0.8], [1.2, 0.4, 0.8]],
+    [[1.2, 0, 1.6], [1.2, 0.4, 1.6]],
+    [[-1.2, 0, 1.6], [-1.2, 0.4, 1.6]],
+    // Backrest
+    [[-1.2, 0.4, 0.8], [-1.2, 0.9, 0.8]],
+    [[1.2, 0.4, 0.8], [1.2, 0.9, 0.8]],
+    [[-1.2, 0.9, 0.8], [1.2, 0.9, 0.8]],
+    // Armrests
+    [[-1.2, 0.4, 1.6], [-1.2, 0.65, 1.6]],
+    [[-1.2, 0.65, 1.6], [-1.2, 0.65, 0.8]],
+    [[1.2, 0.4, 1.6], [1.2, 0.65, 1.6]],
+    [[1.2, 0.65, 1.6], [1.2, 0.65, 0.8]],
+  ];
 
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
-      <mesh ref={meshRef} scale={1.8}>
-        <icosahedronGeometry args={[1, 1]} />
-        <meshPhysicalMaterial
-          color="#b8935f"
-          metalness={0.3}
-          roughness={0.05}
-          transmission={0.9}
-          thickness={0.5}
-          ior={1.5}
-          transparent
-          opacity={0.7}
-        />
-      </mesh>
-    </Float>
+    <group position={[-0.3, -1.2, -0.5]}>
+      {lines.map((pts, i) => (
+        <Line key={`sofa-${i}`} points={pts} color="#b8935f" transparent opacity={0.25} lineWidth={1.2} />
+      ))}
+    </group>
   );
 }
 
+// Wireframe coffee table
+function CoffeeTable() {
+  const lines: [number, number, number][][] = [
+    // Top
+    [[-0.5, 0.35, 0], [0.5, 0.35, 0]],
+    [[0.5, 0.35, 0], [0.5, 0.35, 0.4]],
+    [[0.5, 0.35, 0.4], [-0.5, 0.35, 0.4]],
+    [[-0.5, 0.35, 0.4], [-0.5, 0.35, 0]],
+    // Legs
+    [[-0.45, 0, 0.05], [-0.45, 0.35, 0.05]],
+    [[0.45, 0, 0.05], [0.45, 0.35, 0.05]],
+    [[-0.45, 0, 0.35], [-0.45, 0.35, 0.35]],
+    [[0.45, 0, 0.35], [0.45, 0.35, 0.35]],
+  ];
+
+  return (
+    <group position={[-0.3, -1.2, 0.7]}>
+      {lines.map((pts, i) => (
+        <Line key={`table-${i}`} points={pts} color="#b8935f" transparent opacity={0.2} lineWidth={1} />
+      ))}
+    </group>
+  );
+}
+
+// Wireframe floor lamp
+function FloorLamp() {
+  const lines: [number, number, number][][] = [
+    // Base circle approximation
+    [[-0.15, 0, 0], [0.15, 0, 0]],
+    [[-0.1, 0, -0.1], [0.1, 0, 0.1]],
+    [[-0.1, 0, 0.1], [0.1, 0, -0.1]],
+    // Pole
+    [[0, 0, 0], [0, 1.8, 0]],
+    // Shade
+    [[-0.25, 1.8, -0.1], [0.25, 1.8, -0.1]],
+    [[0.25, 1.8, -0.1], [0.25, 1.8, 0.1]],
+    [[0.25, 1.8, 0.1], [-0.25, 1.8, 0.1]],
+    [[-0.25, 1.8, 0.1], [-0.25, 1.8, -0.1]],
+    [[-0.2, 2.05, -0.07], [0.2, 2.05, -0.07]],
+    [[0.2, 2.05, -0.07], [0.2, 2.05, 0.07]],
+    [[0.2, 2.05, 0.07], [-0.2, 2.05, 0.07]],
+    [[-0.2, 2.05, 0.07], [-0.2, 2.05, -0.07]],
+    // Shade verticals
+    [[-0.25, 1.8, -0.1], [-0.2, 2.05, -0.07]],
+    [[0.25, 1.8, -0.1], [0.2, 2.05, -0.07]],
+    [[0.25, 1.8, 0.1], [0.2, 2.05, 0.07]],
+    [[-0.25, 1.8, 0.1], [-0.2, 2.05, 0.07]],
+  ];
+
+  return (
+    <group position={[1.8, -1.2, -1.2]}>
+      {lines.map((pts, i) => (
+        <Line key={`lamp-${i}`} points={pts} color="#b8935f" transparent opacity={0.2} lineWidth={1} />
+      ))}
+    </group>
+  );
+}
+
+// Wall shelf unit
+function WallShelves() {
+  const shelves: [number, number, number][][] = [];
+  for (let i = 0; i < 3; i++) {
+    const y = 0.8 + i * 0.6;
+    shelves.push(
+      [[-2.4, y, -1.9], [-1.2, y, -1.9]],
+      [[-2.4, y, -1.9], [-2.4, y, -1.7]],
+      [[-1.2, y, -1.9], [-1.2, y, -1.7]],
+      [[-2.4, y, -1.7], [-1.2, y, -1.7]],
+    );
+    // Brackets
+    shelves.push(
+      [[-2.3, y, -1.9], [-2.3, y - 0.15, -1.9]],
+      [[-1.3, y, -1.9], [-1.3, y - 0.15, -1.9]],
+    );
+  }
+
+  return (
+    <group position={[0, -1.2, 0]}>
+      {shelves.map((pts, i) => (
+        <Line key={`shelf-${i}`} points={pts} color="#b8935f" transparent opacity={0.18} lineWidth={1} />
+      ))}
+    </group>
+  );
+}
+
+// Pendant light hanging from ceiling
+function PendantLight() {
+  const groupRef = useRef<Group>(null);
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y = state.clock.elapsedTime * 0.2;
+  });
+
+  const segments = 12;
+  const radius = 0.3;
+  const points: [number, number, number][] = [];
+  for (let i = 0; i <= segments; i++) {
+    const angle = (i / segments) * Math.PI * 2;
+    points.push([Math.cos(angle) * radius, 0, Math.sin(angle) * radius]);
+  }
+
+  const topPoints: [number, number, number][] = [];
+  const topRadius = 0.12;
+  for (let i = 0; i <= segments; i++) {
+    const angle = (i / segments) * Math.PI * 2;
+    topPoints.push([Math.cos(angle) * topRadius, 0.25, Math.sin(angle) * topRadius]);
+  }
+
+  return (
+    <group ref={groupRef} position={[0, 1.6, 0.3]}>
+      {/* Wire */}
+      <Line points={[[0, 0.8, 0], [0, 0.25, 0]]} color="#b8935f" transparent opacity={0.2} lineWidth={1} />
+      {/* Shade bottom ring */}
+      <Line points={points} color="#b8935f" transparent opacity={0.3} lineWidth={1.2} />
+      {/* Shade top ring */}
+      <Line points={topPoints} color="#b8935f" transparent opacity={0.25} lineWidth={1} />
+      {/* Shade lines */}
+      {[0, 3, 6, 9].map((i) => {
+        const bAngle = (i / segments) * Math.PI * 2;
+        const tAngle = (i / segments) * Math.PI * 2;
+        return (
+          <Line
+            key={`pendant-${i}`}
+            points={[
+              [Math.cos(bAngle) * radius, 0, Math.sin(bAngle) * radius],
+              [Math.cos(tAngle) * topRadius, 0.25, Math.sin(tAngle) * topRadius],
+            ]}
+            color="#b8935f"
+            transparent
+            opacity={0.2}
+            lineWidth={1}
+          />
+        );
+      })}
+      {/* Glow */}
+      <pointLight position={[0, 0, 0]} intensity={0.4} color="#b8935f" distance={4} />
+    </group>
+  );
+}
+
+// Floating dust/light particles
 function FloatingParticles() {
   const pointsRef = useRef<THREE.Points>(null);
 
   const particleData = useMemo(() => {
-    const count = 120;
+    const count = 80;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 15;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 15;
+      positions[i * 3] = (Math.random() - 0.5) * 8;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 6;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
     }
     return positions;
   }, []);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
-    pointsRef.current.rotation.y = state.clock.elapsedTime * 0.02;
+    pointsRef.current.rotation.y = state.clock.elapsedTime * 0.015;
   });
 
   return (
@@ -157,32 +279,29 @@ function FloatingParticles() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[particleData, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.02} color="#b8935f" transparent opacity={0.6} sizeAttenuation />
+      <pointsMaterial size={0.015} color="#b8935f" transparent opacity={0.4} sizeAttenuation />
     </points>
   );
 }
 
-function GridFloor() {
-  const gridRef = useRef<Group>(null);
-
-  useFrame((state) => {
-    if (!gridRef.current) return;
-    gridRef.current.position.z = (state.clock.elapsedTime * 0.2) % 1;
-  });
-
-  const lines = useMemo(() => {
-    const result: [number, number, number][][] = [];
-    for (let i = -8; i <= 8; i += 2) {
-      result.push([[i, 0, -8], [i, 0, 8]]);
-      result.push([[-8, 0, i], [8, 0, i]]);
-    }
-    return result;
-  }, []);
+// Decorative floating picture frame
+function PictureFrame() {
+  const lines: [number, number, number][][] = [
+    [[0, 0, 0], [0.7, 0, 0]],
+    [[0.7, 0, 0], [0.7, 0.5, 0]],
+    [[0.7, 0.5, 0], [0, 0.5, 0]],
+    [[0, 0.5, 0], [0, 0, 0]],
+    // Inner frame
+    [[0.05, 0.05, 0], [0.65, 0.05, 0]],
+    [[0.65, 0.05, 0], [0.65, 0.45, 0]],
+    [[0.65, 0.45, 0], [0.05, 0.45, 0]],
+    [[0.05, 0.45, 0], [0.05, 0.05, 0]],
+  ];
 
   return (
-    <group ref={gridRef} position={[0, -3, 0]} rotation={[0, Math.PI / 4, 0]}>
+    <group position={[0.5, 0.4, -1.88]}>
       {lines.map((pts, i) => (
-        <Line key={i} points={pts} color="#b8935f" transparent opacity={0.06} lineWidth={1} />
+        <Line key={`frame-${i}`} points={pts} color="#b8935f" transparent opacity={0.2} lineWidth={1} />
       ))}
     </group>
   );
@@ -192,7 +311,7 @@ export default function HeroScene() {
   return (
     <div className="absolute inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 0, 7], fov: 45 }}
+        camera={{ position: [3, 1.5, 5], fov: 40 }}
         dpr={[1, 1.5]}
         gl={{
           antialias: true,
@@ -203,16 +322,20 @@ export default function HeroScene() {
         style={{ background: "transparent" }}
         frameloop="always"
       >
-        <ambientLight intensity={0.3} />
-        <directionalLight position={[5, 5, 5]} intensity={0.5} />
-        <pointLight position={[-3, 2, 4]} intensity={0.8} color="#b8935f" distance={15} />
-        <pointLight position={[3, -2, -4]} intensity={0.4} color="#a67c47" distance={12} />
+        <ambientLight intensity={0.2} />
+        <directionalLight position={[5, 5, 5]} intensity={0.3} />
+        <pointLight position={[-1, 1, 3]} intensity={0.5} color="#b8935f" distance={12} />
+        <pointLight position={[2, 0.5, 1]} intensity={0.3} color="#a67c47" distance={8} />
 
         <MouseTracker>
-          <GlassStructure />
-          <ArchWireframe />
+          <RoomWireframe />
+          <Sofa />
+          <CoffeeTable />
+          <FloorLamp />
+          <WallShelves />
+          <PendantLight />
+          <PictureFrame />
           <FloatingParticles />
-          <GridFloor />
         </MouseTracker>
       </Canvas>
     </div>

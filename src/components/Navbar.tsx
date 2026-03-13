@@ -10,9 +10,8 @@ gsap.registerPlugin(ScrollTrigger);
 const navLinks = [
   { num: "01", label: "About", href: "#about" },
   { num: "02", label: "Services", href: "#services" },
-  { num: "03", label: "Projects", href: "#projects" },
-  { num: "04", label: "Process", href: "#process" },
-  { num: "05", label: "Contact", href: "#contact" },
+  { num: "03", label: "Process", href: "#process" },
+  { num: "04", label: "Contact", href: "#contact" },
 ];
 
 interface NavbarProps {

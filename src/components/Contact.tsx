@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MapPin, Mail, Phone, ArrowUpRight } from "lucide-react";
+import { MapPin, Phone, ArrowUpRight, Navigation } from "lucide-react";
 import SplitText from "./SplitText";
 import MagneticButton from "./MagneticButton";
 
@@ -52,21 +52,51 @@ export default function Contact() {
             </p>
 
             <div className="mt-8 space-y-5 md:mt-12 md:space-y-6">
-              {[
-                { icon: MapPin, label: "Studio", value: "42 Design Quarter, Bandra West, Mumbai 400050" },
-                { icon: Mail, label: "Email", value: "hello@arconin.com" },
-                { icon: Phone, label: "Phone", value: "+91 22 4200 8888" },
-              ].map((item) => (
-                <div key={item.label} className="contact-animate flex items-start gap-4">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 md:h-10 md:w-10">
-                    <item.icon size={16} className="md:h-[18px] md:w-[18px]" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">{item.label}</p>
-                    <p className="mt-1 text-xs text-dark-200 md:text-sm">{item.value}</p>
-                  </div>
+              <div className="contact-animate flex items-start gap-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 md:h-10 md:w-10">
+                  <MapPin size={16} className="md:h-[18px] md:w-[18px]" />
                 </div>
-              ))}
+                <div>
+                  <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Address</p>
+                  <p className="mt-1 text-xs leading-relaxed text-dark-200 md:text-sm">
+                    H.No.8-2-268/D/5, Road No 3, Kundan Marble Lane,<br />
+                    Sagar Society, Sri Nagar Colony,<br />
+                    Aurora Colony, Banjara Hills,<br />
+                    Hyderabad, Telangana - 500034
+                  </p>
+                </div>
+              </div>
+
+              <div className="contact-animate flex items-start gap-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 md:h-10 md:w-10">
+                  <Navigation size={16} className="md:h-[18px] md:w-[18px]" />
+                </div>
+                <div>
+                  <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Location</p>
+                  <a
+                    href="https://maps.app.goo.gl/jshUGvwxp8LxKft6A?g_st=iwb"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-flex items-center gap-1 text-xs text-brand-400 transition-colors hover:text-brand-300 md:text-sm"
+                  >
+                    View on Google Maps
+                    <ArrowUpRight size={12} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="contact-animate flex items-start gap-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 md:h-10 md:w-10">
+                  <Phone size={16} className="md:h-[18px] md:w-[18px]" />
+                </div>
+                <div>
+                  <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Phone</p>
+                  <a href="tel:+918712175665" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
+                    +91 87121 75665
+                  </a>
+                  <p className="mt-0.5 text-[10px] text-dark-500 md:text-xs">Babu — Admin</p>
+                </div>
+              </div>
             </div>
           </div>
 

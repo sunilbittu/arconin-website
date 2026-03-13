@@ -58,14 +58,14 @@ export default function SplitText({
   const items = type === "chars" ? children.split("") : children.split(" ");
 
   return (
-    <Tag ref={containerRef as any} className={`${className}`} style={{ perspective: "800px" }}>
+    <Tag ref={containerRef as any} className={className} style={{ perspective: "800px" }}>
       {items.map((item, i) => (
-        <span key={i} className="inline-block overflow-hidden">
+        <span key={i} className="inline-block overflow-hidden align-bottom">
           <span
-            className="split-item inline-block"
+            className={`split-item inline-block ${className}`}
             style={{ transformOrigin: "bottom center" }}
           >
-            {item}
+            {item === " " ? "\u00A0" : item}
             {type === "words" && i < items.length - 1 ? "\u00A0" : ""}
           </span>
         </span>

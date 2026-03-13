@@ -13,7 +13,6 @@ interface HeroProps {
 export default function Hero({ loaded }: HeroProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,31 +52,6 @@ export default function Hero({ loaded }: HeroProps) {
         delay: 0.5,
       });
 
-      // Stats counter
-      const counters = statsRef.current?.querySelectorAll("[data-count]");
-      counters?.forEach((el, i) => {
-        const target = parseInt(el.getAttribute("data-count") || "0");
-        gsap.from(
-          { val: 0 },
-          {
-            val: target,
-            duration: 2,
-            delay: 0.8 + i * 0.2,
-            ease: "power2.out",
-            onUpdate: function () {
-              (el as HTMLElement).textContent = `${Math.round(this.targets()[0].val)}`;
-            },
-          }
-        );
-      });
-
-      // Stats entrance
-      gsap.from(statsRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        delay: 0.6,
-      });
     });
 
     return () => ctx.revert();
@@ -122,43 +96,16 @@ export default function Hero({ loaded }: HeroProps) {
               Crafting
             </SplitText>
             <br />
-            <span className="text-gradient">
-              <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.3 : 999}>
-                Spaces That
-              </SplitText>
-            </span>
+            <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.3 : 999} className="text-gradient">
+              Spaces That
+            </SplitText>
             <br />
-            <span className="font-serif font-light italic">
-              <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.6 : 999}>
-                Inspire
-              </SplitText>
-            </span>
+            <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.6 : 999} className="font-serif font-light italic">
+              Inspire
+            </SplitText>
           </h1>
         </div>
 
-        {/* Stats */}
-        <div ref={statsRef} className="mt-10 flex flex-wrap gap-6 md:mt-16 md:gap-12" style={{ opacity: loaded ? undefined : 0 }}>
-          <div>
-            <span className="font-display text-3xl font-bold text-gradient md:text-5xl" data-count="150">
-              0
-            </span>
-            <span className="font-display text-3xl font-bold text-gradient md:text-5xl">+</span>
-            <p className="mt-1 text-xs text-dark-400 md:mt-2 md:text-sm">Projects Delivered</p>
-          </div>
-          <div>
-            <span className="font-display text-3xl font-bold text-gradient md:text-5xl" data-count="12">
-              0
-            </span>
-            <p className="mt-1 text-xs text-dark-400 md:mt-2 md:text-sm">Years of Excellence</p>
-          </div>
-          <div>
-            <span className="font-display text-3xl font-bold text-gradient md:text-5xl" data-count="35">
-              0
-            </span>
-            <span className="font-display text-3xl font-bold text-gradient md:text-5xl">+</span>
-            <p className="mt-1 text-xs text-dark-400 md:mt-2 md:text-sm">Design Awards</p>
-          </div>
-        </div>
 
         {/* Scroll indicator */}
         <div
