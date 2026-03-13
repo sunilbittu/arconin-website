@@ -1,14 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MapPin, Phone, ArrowUpRight, Navigation } from "lucide-react";
+import { MapPin, Phone, ArrowUpRight, Navigation, CheckCircle } from "lucide-react";
 import SplitText from "./SplitText";
 import MagneticButton from "./MagneticButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+
 export default function Contact() {
   const ref = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -28,6 +31,38 @@ export default function Contact() {
 
     return () => ctx.revert();
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("sending");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    formData.append("access_key", WEB3FORMS_KEY);
+    formData.append("subject", "New inquiry from Arconin website");
+    formData.append("from_name", "Arconin Website");
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setStatus("sent");
+        form.reset();
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
 
   return (
     <section id="contact" className="relative py-20 md:py-32">
@@ -102,7 +137,10 @@ export default function Contact() {
 
           {/* Right - Form */}
           <div className="contact-animate">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-6 md:space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+              {/* Honeypot for spam */}
+              <input type="checkbox" name="botcheck" className="hidden" />
+
               <div className="grid gap-6 sm:grid-cols-2 md:gap-8">
                 <div>
                   <label className="mb-2 block text-[10px] tracking-widest text-dark-500 uppercase md:mb-3 md:text-xs">
@@ -110,6 +148,8 @@ export default function Contact() {
                   </label>
                   <input
                     type="text"
+                    name="name"
+                    required
                     placeholder="Your name"
                     className="w-full border-0 border-b border-dark-700 bg-transparent px-0 py-2.5 text-sm text-white placeholder-dark-600 outline-none transition-colors focus:border-brand-500 md:py-3"
                   />
@@ -120,6 +160,8 @@ export default function Contact() {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    required
                     placeholder="you@example.com"
                     className="w-full border-0 border-b border-dark-700 bg-transparent px-0 py-2.5 text-sm text-white placeholder-dark-600 outline-none transition-colors focus:border-brand-500 md:py-3"
                   />
@@ -130,7 +172,10 @@ export default function Contact() {
                 <label className="mb-2 block text-[10px] tracking-widest text-dark-500 uppercase md:mb-3 md:text-xs">
                   Project Type
                 </label>
-                <select className="w-full appearance-none border-0 border-b border-dark-700 bg-transparent px-0 py-2.5 text-sm text-dark-300 outline-none transition-colors focus:border-brand-500 md:py-3">
+                <select
+                  name="project_type"
+                  className="w-full appearance-none border-0 border-b border-dark-700 bg-transparent px-0 py-2.5 text-sm text-dark-300 outline-none transition-colors focus:border-brand-500 md:py-3"
+                >
                   <option className="bg-dark-900">Residential</option>
                   <option className="bg-dark-900">Commercial</option>
                   <option className="bg-dark-900">Interior Design</option>
@@ -144,19 +189,44 @@ export default function Contact() {
                   Message
                 </label>
                 <textarea
+                  name="message"
+                  required
                   rows={4}
                   placeholder="Tell us about your project..."
                   className="w-full resize-none border-0 border-b border-dark-700 bg-transparent px-0 py-2.5 text-sm text-white placeholder-dark-600 outline-none transition-colors focus:border-brand-500 md:py-3"
                 />
               </div>
 
-              <MagneticButton
-                type="submit"
-                className="group flex w-full items-center justify-center gap-2 rounded-full bg-brand-500 px-8 py-3.5 font-display text-xs font-semibold text-white transition-all hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/20 md:py-4 md:text-sm"
-              >
-                Send Message
-                <ArrowUpRight size={14} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:h-4 md:w-4" />
-              </MagneticButton>
+              {status === "sent" ? (
+                <div className="flex items-center justify-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-8 py-3.5 md:py-4">
+                  <CheckCircle size={16} className="text-green-400" />
+                  <span className="text-xs font-medium text-green-400 md:text-sm">Message sent successfully!</span>
+                </div>
+              ) : status === "error" ? (
+                <div className="flex items-center justify-center rounded-full border border-red-500/30 bg-red-500/10 px-8 py-3.5 md:py-4">
+                  <span className="text-xs font-medium text-red-400 md:text-sm">Something went wrong. Please try again.</span>
+                </div>
+              ) : (
+                <MagneticButton
+                  type="submit"
+                  className="group flex w-full items-center justify-center gap-2 rounded-full bg-brand-500 px-8 py-3.5 font-display text-xs font-semibold text-white transition-all hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/20 disabled:opacity-50 md:py-4 md:text-sm"
+                >
+                  {status === "sending" ? (
+                    <>
+                      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <ArrowUpRight size={14} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:h-4 md:w-4" />
+                    </>
+                  )}
+                </MagneticButton>
+              )}
             </form>
           </div>
         </div>
