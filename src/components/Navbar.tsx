@@ -79,8 +79,9 @@ export default function Navbar({ loaded }: NavbarProps) {
         style={{ opacity: loaded ? undefined : 0 }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
-          <a href="#" className="font-display text-2xl font-bold tracking-tight text-white">
-            ARCONIN
+          <a href="#" className="flex items-center gap-2.5">
+            <img src="/logo.svg" alt="Arconin" className="h-8 w-8 md:h-9 md:w-9" />
+            <span className="font-display text-xl font-bold tracking-tight text-white md:text-2xl">ARCONIN</span>
           </a>
 
           <div className="hidden items-center gap-10 md:flex">
@@ -124,7 +125,10 @@ export default function Navbar({ loaded }: NavbarProps) {
             className="fixed inset-0 z-[100] flex flex-col bg-dark-950/98 backdrop-blur-xl"
           >
             <div className="flex items-center justify-between px-6 py-6">
-              <span className="font-display text-2xl font-bold text-white">ARCONIN</span>
+              <span className="flex items-center gap-2.5">
+                <img src="/logo.svg" alt="Arconin" className="h-8 w-8" />
+                <span className="font-display text-2xl font-bold text-white">ARCONIN</span>
+              </span>
               <button onClick={() => setMobileOpen(false)} className="text-white">
                 <X size={24} />
               </button>

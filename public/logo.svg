@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Architectural "A" mark for Arconin -->
+  <rect width="512" height="512" rx="64" fill="#0a0a0a"/>
+  <!-- Outer A frame -->
+  <path d="M256 80L100 400h48l30-60h156l30 60h48L256 80z" stroke="#b8935f" stroke-width="8" fill="none"/>
+  <!-- Inner triangle cutout -->
+  <path d="M256 160l-68 136h136L256 160z" stroke="#b8935f" stroke-width="4" fill="none" opacity="0.4"/>
+  <!-- Crossbar -->
+  <line x1="168" y1="310" x2="344" y2="310" stroke="#b8935f" stroke-width="6" opacity="0.8"/>
+  <!-- Top accent dot -->
+  <circle cx="256" cy="80" r="6" fill="#b8935f"/>
+  <!-- Base accent line -->
+  <line x1="140" y1="420" x2="372" y2="420" stroke="#b8935f" stroke-width="3" opacity="0.3"/>
+</svg>
