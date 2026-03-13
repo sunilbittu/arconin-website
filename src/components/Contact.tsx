@@ -38,12 +38,19 @@ export default function Contact() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    formData.append("access_key", WEB3FORMS_KEY);
+
+    const payload: Record<string, string> = {
+      access_key: WEB3FORMS_KEY,
+    };
+    formData.forEach((value, key) => {
+      if (key !== "botcheck") payload[key] = value as string;
+    });
 
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
