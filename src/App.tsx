@@ -25,14 +25,16 @@ export default function App() {
       {!loaded && <Preloader onComplete={handlePreloaderComplete} />}
       <div className="min-h-screen bg-dark-950">
         <Navbar loaded={loaded} />
-        <Hero loaded={loaded} />
-        <Marquee />
-        <About />
-        <Services />
-        {/* <Projects /> */}
-        <Process />
-        <CTA />
-        <Contact />
+        <main>
+          <Hero loaded={loaded} />
+          <Marquee />
+          <About />
+          <Services />
+          {/* <Projects /> */}
+          <Process />
+          <CTA />
+          <Contact />
+        </main>
         <Footer />
       </div>
     </SmoothScroll>
