@@ -43,18 +43,6 @@ export default function Footer() {
             thoughtful design, and refined interiors.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-            {["Instagram", "LinkedIn", "Pinterest", "Behance"].map((social) => (
-              <a
-                key={social}
-                href="#"
-                className="text-[10px] tracking-widest text-dark-500 uppercase transition-colors hover:text-brand-400 md:text-xs"
-              >
-                {social}
-              </a>
-            ))}
-          </div>
-
           <MagneticButton
             onClick={scrollToTop}
             className="mt-6 flex h-10 w-10 items-center justify-center rounded-full border border-dark-700 text-dark-400 transition-colors hover:border-brand-500 hover:text-brand-400 md:mt-8 md:h-12 md:w-12"

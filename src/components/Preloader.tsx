@@ -74,7 +74,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-dark-950"
       style={{ clipPath: "inset(0 0 0 0)" }}
     >
-      <img src="/logo.svg" alt="" className="mb-6 h-16 w-16 md:h-20 md:w-20" />
+      <img src="/logo.svg" alt="Arconin Logo" className="mb-6 h-16 w-16 md:h-20 md:w-20" />
       <div
         ref={lettersRef}
         className="flex items-center gap-1 overflow-hidden font-serif text-5xl font-light tracking-[0.2em] text-white md:text-8xl"
