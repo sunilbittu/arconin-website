@@ -14,7 +14,7 @@ interface NavbarProps {
 }
 
 const desktopItems = navItems.filter((item) =>
-  ["About", "Architecture", "Construction", "Consulting", "Interiors", "Innovation", "Projects"].includes(item.label)
+  ["About", "Architecture", "Construction", "Interiors", "Innovation", "Projects", "Gallery"].includes(item.label)
 );
 
 const mobileItems = navItems;
@@ -138,7 +138,7 @@ export default function Navbar({ loaded }: NavbarProps) {
             <span className="font-display text-xl font-bold tracking-tight text-white md:text-2xl">ARCONIN</span>
           </Link>
 
-          <div className="hidden items-center gap-6 lg:flex xl:gap-8">
+          <div className="hidden items-center gap-4 lg:flex xl:gap-6">
             {desktopItems.map((item) => (
               <DesktopDropdown key={item.label} item={item} />
             ))}

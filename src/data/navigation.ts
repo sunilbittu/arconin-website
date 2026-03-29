@@ -54,6 +54,7 @@ export const navItems: NavItem[] = [
     ],
   },
   { label: "Projects", to: "/projects" },
+  { label: "Gallery", to: "/gallery" },
   { label: "Technology", to: "/technology" },
   { label: "Careers", to: "/careers" },
   { label: "Contact", to: "/contact" },

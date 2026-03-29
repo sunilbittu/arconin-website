@@ -17,6 +17,7 @@ import ProjectsPage from "./pages/ProjectsPage";
 import TechnologyPage from "./pages/TechnologyPage";
 import CareersPage from "./pages/CareersPage";
 import ContactPage from "./pages/ContactPage";
+import GalleryPage from "./pages/GalleryPage";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/technology" element={<TechnologyPage />} />
             <Route path="/careers" element={<CareersPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </main>
