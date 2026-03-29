@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import SmoothScroll from "./components/SmoothScroll";
 import CustomCursor from "./components/CustomCursor";
 import Preloader from "./components/Preloader";
@@ -20,7 +20,9 @@ import ContactPage from "./pages/ContactPage";
 import GalleryPage from "./pages/GalleryPage";
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false);
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+  const [loaded, setLoaded] = useState(!isHome);
 
   const handlePreloaderComplete = useCallback(() => {
     setLoaded(true);
@@ -29,7 +31,7 @@ export default function App() {
   return (
     <SmoothScroll>
       <CustomCursor />
-      {!loaded && <Preloader onComplete={handlePreloaderComplete} />}
+      {!loaded && isHome && <Preloader onComplete={handlePreloaderComplete} />}
       <div className="min-h-screen bg-dark-950">
         <Navbar loaded={loaded} />
         <main>
