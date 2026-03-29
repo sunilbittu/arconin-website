@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -13,6 +14,7 @@ export function useLenis() {
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -36,6 +38,24 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       gsap.ticker.remove(lenis.raf);
     };
   }, []);
+
+  // Reset scroll position and refresh ScrollTrigger on route change (skip initial mount)
+  const isFirstMount = useRef(true);
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    const lenis = lenisRef.current;
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    }
+    // Give DOM time to render before refreshing triggers
+    const timeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [pathname]);
 
   return (
     <SmoothScrollContext.Provider value={lenisRef.current}>

@@ -60,7 +60,7 @@ export default function SplitText({
   return (
     <Tag ref={containerRef as any} className={className} style={{ perspective: "800px" }}>
       {items.map((item, i) => (
-        <span key={i} className="inline-block overflow-hidden align-bottom">
+        <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.15em]">
           <span
             className={`split-item inline-block ${className}`}
             style={{ transformOrigin: "bottom center" }}

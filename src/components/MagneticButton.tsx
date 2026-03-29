@@ -1,11 +1,13 @@
 import { useRef, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
-  as?: "button" | "a";
+  as?: "button" | "a" | "link";
   href?: string;
+  to?: string;
   onClick?: () => void;
   strength?: number;
   type?: "button" | "submit";
@@ -16,6 +18,7 @@ export default function MagneticButton({
   className = "",
   as: Tag = "button",
   href,
+  to,
   onClick,
   strength = 0.3,
   type,
@@ -37,16 +40,33 @@ export default function MagneticButton({
     gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.4)" });
   };
 
-  const props: any = {
-    ref,
+  const commonProps = {
+    ref: ref as any,
     className,
     onMouseMove: handleMouseMove,
     onMouseLeave: handleMouseLeave,
     onClick,
   };
 
-  if (Tag === "a") props.href = href;
-  if (Tag === "button" && type) props.type = type;
+  if (Tag === "link" && to) {
+    return (
+      <Link {...commonProps} to={to}>
+        {children}
+      </Link>
+    );
+  }
 
-  return <Tag {...props}>{children}</Tag>;
+  if (Tag === "a") {
+    return (
+      <a {...commonProps} href={href}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button {...commonProps} type={type}>
+      {children}
+    </button>
+  );
 }

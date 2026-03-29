@@ -1,28 +1,82 @@
 import { useEffect, useState, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
+import { navItems, type NavItem } from "../data/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const navLinks = [
-  { num: "01", label: "About", href: "#about" },
-  { num: "02", label: "Services", href: "#services" },
-  { num: "03", label: "Process", href: "#process" },
-  { num: "04", label: "Contact", href: "#contact" },
-];
 
 interface NavbarProps {
   loaded: boolean;
 }
 
+const desktopItems = navItems.filter((item) =>
+  ["About", "Architecture", "Construction", "Consulting", "Interiors", "Innovation", "Projects"].includes(item.label)
+);
+
+const mobileItems = navItems;
+
+function DesktopDropdown({ item }: { item: NavItem }) {
+  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isActive = pathname === item.to || pathname.startsWith(item.to + "?");
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <Link
+        to={item.to}
+        className={`group flex items-center gap-1.5 text-sm font-light tracking-widest uppercase transition-colors ${
+          isActive ? "text-brand-400" : "text-dark-300 hover:text-white"
+        }`}
+      >
+        {item.label}
+        {item.children && <ChevronDown size={12} className="text-dark-500" />}
+      </Link>
+
+      <AnimatePresence>
+        {open && item.children && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute left-0 top-full z-50 mt-3 min-w-[200px] rounded-xl border border-dark-700/50 bg-dark-900/95 p-2 backdrop-blur-xl"
+          >
+            {item.children.map((child) => (
+              <Link
+                key={child.label}
+                to={child.to}
+                className="block rounded-lg px-3 py-2 text-xs font-light tracking-wider text-dark-300 transition-colors hover:bg-dark-800 hover:text-brand-400"
+              >
+                {child.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Navbar({ loaded }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -74,42 +128,33 @@ export default function Navbar({ loaded }: NavbarProps) {
       <nav
         ref={navRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass py-4" : "bg-transparent py-6"
+          scrolled ? "glass py-3" : "bg-transparent py-5"
         }`}
         style={{ opacity: loaded ? undefined : 0 }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
-          <a href="#" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5">
             <img src="/logo.svg" alt="Arconin" className="h-8 w-8 md:h-9 md:w-9" />
             <span className="font-display text-xl font-bold tracking-tight text-white md:text-2xl">ARCONIN</span>
-          </a>
+          </Link>
 
-          <div className="hidden items-center gap-10 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="line-reveal group flex items-center gap-2 text-sm font-light tracking-widest text-dark-300 uppercase transition-colors hover:text-white"
-              >
-                <span className="text-[10px] text-brand-500/60 transition-colors group-hover:text-brand-400">
-                  {link.num}
-                </span>
-                {link.label}
-              </a>
+          <div className="hidden items-center gap-6 lg:flex xl:gap-8">
+            {desktopItems.map((item) => (
+              <DesktopDropdown key={item.label} item={item} />
             ))}
           </div>
 
           <MagneticButton
-            as="a"
-            href="#contact"
-            className="hidden rounded-full border border-brand-500/40 bg-brand-500/10 px-6 py-2.5 text-sm font-medium text-brand-300 transition-all hover:border-brand-500 hover:bg-brand-500/20 md:inline-block"
+            as="link"
+            to="/contact"
+            className="hidden rounded-full border border-brand-500/40 bg-brand-500/10 px-6 py-2.5 text-sm font-medium text-brand-300 transition-all hover:border-brand-500 hover:bg-brand-500/20 lg:inline-block"
           >
             Get in Touch
           </MagneticButton>
 
           <button
             onClick={() => setMobileOpen(true)}
-            className="text-white md:hidden"
+            className="text-white lg:hidden"
           >
             <Menu size={24} />
           </button>
@@ -122,31 +167,74 @@ export default function Navbar({ loaded }: NavbarProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex flex-col bg-dark-950/98 backdrop-blur-xl"
+            className="fixed inset-0 z-[100] flex flex-col overflow-y-auto bg-dark-950/98 backdrop-blur-xl"
           >
-            <div className="flex items-center justify-between px-6 py-6">
-              <span className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between px-6 py-5">
+              <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
                 <img src="/logo.svg" alt="Arconin" className="h-8 w-8" />
                 <span className="font-display text-2xl font-bold text-white">ARCONIN</span>
-              </span>
+              </Link>
               <button onClick={() => setMobileOpen(false)} className="text-white">
                 <X size={24} />
               </button>
             </div>
-            <div className="flex flex-1 flex-col items-center justify-center gap-8">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
+            <div className="flex flex-1 flex-col gap-1 px-6 py-4">
+              {mobileItems.map((item, i) => (
+                <motion.div
+                  key={item.label}
                   initial={{ opacity: 0, x: -40 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 * i }}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-4 font-display text-4xl font-light text-dark-200 transition-colors hover:text-brand-400"
+                  transition={{ delay: 0.03 * i }}
                 >
-                  <span className="text-sm text-brand-500/50">{link.num}</span>
-                  {link.label}
-                </motion.a>
+                  {item.children ? (
+                    <div>
+                      <button
+                        onClick={() =>
+                          setMobileExpanded(mobileExpanded === item.label ? null : item.label)
+                        }
+                        className="flex w-full items-center justify-between py-3 font-display text-2xl font-light text-dark-200 transition-colors hover:text-brand-400"
+                      >
+                        <Link to={item.to} onClick={() => setMobileOpen(false)}>
+                          {item.label}
+                        </Link>
+                        <ChevronDown
+                          size={18}
+                          className={`text-dark-500 transition-transform ${
+                            mobileExpanded === item.label ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      <div
+                        className="overflow-hidden transition-all duration-300"
+                        style={{
+                          maxHeight: mobileExpanded === item.label ? "300px" : "0",
+                          opacity: mobileExpanded === item.label ? 1 : 0,
+                        }}
+                      >
+                        <div className="space-y-1 pb-3 pl-4">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.label}
+                              to={child.to}
+                              onClick={() => setMobileOpen(false)}
+                              className="block py-2 text-sm font-light text-dark-400 transition-colors hover:text-brand-400"
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      to={item.to}
+                      onClick={() => setMobileOpen(false)}
+                      className="block py-3 font-display text-2xl font-light text-dark-200 transition-colors hover:text-brand-400"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </motion.div>
               ))}
             </div>
           </motion.div>

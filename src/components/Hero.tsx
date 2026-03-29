@@ -93,15 +93,15 @@ export default function Hero({ loaded }: HeroProps) {
         <div style={{ opacity: loaded ? 1 : 0 }}>
           <h1 className="font-display text-[11vw] font-bold leading-[0.9] tracking-tight text-white sm:text-[10vw] md:text-[8vw] lg:text-[7vw]">
             <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0 : 999}>
-              Crafting
+              Engineered
             </SplitText>
             <br />
             <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.3 : 999} className="text-gradient">
-              Spaces That
+              Luxury
             </SplitText>
             <br />
             <SplitText type="chars" stagger={0.02} duration={1} delay={loaded ? 0.6 : 999} className="font-serif font-light italic">
-              Inspire
+              Living
             </SplitText>
           </h1>
         </div>

@@ -1,9 +1,31 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const footerLinks = {
+  Company: [
+    { label: "About Us", to: "/about" },
+    { label: "Projects", to: "/projects" },
+    { label: "Careers", to: "/careers" },
+    { label: "Contact", to: "/contact" },
+  ],
+  Services: [
+    { label: "Architecture", to: "/architecture" },
+    { label: "Construction", to: "/construction" },
+    { label: "Consulting", to: "/consulting" },
+    { label: "Interiors", to: "/interiors" },
+  ],
+  Innovation: [
+    { label: "Technology", to: "/technology" },
+    { label: "Smart Interiors", to: "/innovation?tab=smart-interior" },
+    { label: "Sustainability", to: "/innovation?tab=sustainable" },
+    { label: "Digital Monitoring", to: "/innovation?tab=digital-monitoring" },
+  ],
+};
 
 export default function Footer() {
   const brandRef = useRef<HTMLDivElement>(null);
@@ -33,8 +55,65 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-dark-800 py-12 md:py-20">
       <div ref={brandRef} className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="text-stroke pointer-events-none select-none text-center font-display text-[12vw] font-bold leading-none md:text-[15vw]">
-          ARCONIN
+        {/* Navigation Columns */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title}>
+              <h4 className="mb-4 text-xs font-semibold tracking-wider text-white uppercase md:mb-6 md:text-sm">
+                {title}
+              </h4>
+              <ul className="space-y-2 md:space-y-3">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.to}
+                      className="text-xs font-light text-dark-400 transition-colors hover:text-brand-400 md:text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {/* Connect column */}
+          <div>
+            <h4 className="mb-4 text-xs font-semibold tracking-wider text-white uppercase md:mb-6 md:text-sm">
+              Connect
+            </h4>
+            <ul className="space-y-2 md:space-y-3">
+              <li>
+                <a
+                  href="tel:+919398801130"
+                  className="text-xs font-light text-dark-400 transition-colors hover:text-brand-400 md:text-sm"
+                >
+                  +91 93988 01130
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:enquiry@arconin.com"
+                  className="text-xs font-light text-dark-400 transition-colors hover:text-brand-400 md:text-sm"
+                >
+                  enquiry@arconin.com
+                </a>
+              </li>
+              <li>
+                <p className="text-xs font-light leading-relaxed text-dark-500 md:text-sm">
+                  Banjara Hills, Hyderabad,<br />
+                  Telangana - 500034
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Brand text */}
+        <div className="mt-12 md:mt-16">
+          <div className="text-stroke pointer-events-none select-none text-center font-display text-[12vw] font-bold leading-none md:text-[15vw]">
+            ARCONIN
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-5 text-center md:mt-12 md:gap-6">
