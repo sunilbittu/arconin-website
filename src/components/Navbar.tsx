@@ -101,21 +101,6 @@ export default function Navbar({ loaded }: NavbarProps) {
     return () => ctx.revert();
   }, []);
 
-  // Entrance animation gated by preloader
-  useEffect(() => {
-    if (!loaded || !navRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.from(navRef.current, {
-        y: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power4.out",
-        delay: 0.2,
-      });
-    });
-    return () => ctx.revert();
-  }, [loaded]);
-
   return (
     <>
       {/* Scroll progress bar */}
@@ -125,12 +110,14 @@ export default function Navbar({ loaded }: NavbarProps) {
         style={{ transform: "scaleX(0)" }}
       />
 
-      <nav
+      <motion.nav
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        initial={{ y: -100, opacity: 0 }}
+        animate={loaded ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: loaded ? 0.2 : 0 }}
+        className={`fixed top-0 left-0 right-0 z-50 ${
           scrolled ? "glass py-3" : "bg-transparent py-5"
         }`}
-        style={{ opacity: loaded ? undefined : 0 }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-2.5">
@@ -159,7 +146,7 @@ export default function Navbar({ loaded }: NavbarProps) {
             <Menu size={24} />
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       <AnimatePresence>
         {mobileOpen && (
