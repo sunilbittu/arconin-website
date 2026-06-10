@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PageLayout from "../components/layout/PageLayout";
 import PageHero from "../components/layout/PageHero";
 import ImageReveal from "../components/ImageReveal";
-import { projects, projectCategories } from "../data/projects";
+import { projects, projectCategories, portfolioStats } from "../data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,6 +38,30 @@ export default function ProjectsPage() {
         title="Our Projects"
         subtitle="A showcase of residential, commercial, interior, and construction projects delivered with engineering precision and design excellence."
       />
+
+      {/* Portfolio stat strip */}
+      <div className="mx-auto max-w-7xl px-6 pb-12 lg:px-8 md:pb-16">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-dark-700/50 bg-dark-700/50 sm:grid-cols-2">
+          {portfolioStats.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col gap-2 bg-dark-900/40 p-6 md:p-8"
+            >
+              <p className="font-display text-4xl font-bold text-brand-400 md:text-5xl">
+                {stat.value}
+              </p>
+              <p className="text-sm font-medium tracking-wide text-white md:text-base">
+                {stat.label}
+              </p>
+              {stat.detail && (
+                <p className="text-xs font-light text-dark-400 md:text-sm">
+                  {stat.detail}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Filter bar */}
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -94,7 +118,7 @@ export default function ProjectsPage() {
                       <span className="text-dark-500">Scope:</span> {project.scope}
                     </p>
                     <p className="text-xs font-light text-dark-400">
-                      <span className="text-dark-500">Timeline:</span> {project.timeline}
+                      <span className="text-dark-500">Area:</span> {project.area}
                     </p>
                   </div>
                 </div>
