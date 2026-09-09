@@ -163,9 +163,21 @@ export default function ContactPage() {
                     <Phone size={16} className="md:h-[18px] md:w-[18px]" />
                   </div>
                   <div>
-                    <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Phone</p>
-                    <a href="tel:+919398801130" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
-                      +91 93988 01130
+                    <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Interiors Consultation</p>
+                    <a href="tel:+919063888137" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
+                      +91 90638 88137
+                    </a>
+                  </div>
+                </div>
+
+                <div className="contact-animate flex items-start gap-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 md:h-10 md:w-10">
+                    <Phone size={16} className="md:h-[18px] md:w-[18px]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Construction Consultation</p>
+                    <a href="tel:+919063888138" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
+                      +91 90638 88138
                     </a>
                   </div>
                 </div>
