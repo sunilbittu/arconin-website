@@ -1,4 +1,4 @@
-import { useEffect, useRef, Suspense } from "react";
+import { useLayoutEffect, useRef, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroScene from "./three/HeroScene";
@@ -15,7 +15,7 @@ export default function Hero({ loaded }: HeroProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!loaded) return;
 
     const isMobile = window.innerWidth < 768;

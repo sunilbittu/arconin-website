@@ -92,7 +92,7 @@ export default function CareersPage() {
                     <div className="mt-6">
                       <MagneticButton
                         as="a"
-                        href="mailto:enquiry@arconin.com"
+                        href="mailto:Enquiry@arconin.com"
                         className="inline-flex items-center gap-2 rounded-full border border-brand-500/40 bg-brand-500/10 px-6 py-2 text-xs font-medium text-brand-300 transition-all hover:border-brand-500 hover:bg-brand-500/20"
                       >
                         Apply Now
