@@ -117,10 +117,10 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:enquiry@arconin.com"
+                  href="mailto:Enquiry@arconin.com"
                   className="text-xs font-light text-dark-400 transition-colors hover:text-brand-400 md:text-sm"
                 >
-                  enquiry@arconin.com
+                  Enquiry@arconin.com
                 </a>
               </li>
               <li>

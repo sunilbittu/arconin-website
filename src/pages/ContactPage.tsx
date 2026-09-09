@@ -176,8 +176,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] tracking-widest text-dark-500 uppercase md:text-xs">Email</p>
-                    <a href="mailto:enquiry@arconin.com" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
-                      enquiry@arconin.com
+                    <a href="mailto:Enquiry@arconin.com" className="mt-1 text-xs text-dark-200 transition-colors hover:text-brand-400 md:text-sm">
+                      Enquiry@arconin.com
                     </a>
                   </div>
                 </div>
