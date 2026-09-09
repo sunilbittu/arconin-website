@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Phone } from "lucide-react";
 import PageLayout from "../components/layout/PageLayout";
 import PageHero from "../components/layout/PageHero";
 import TabNav, { useActiveTab } from "../components/ui/TabNav";
+import MagneticButton from "../components/MagneticButton";
 import { interiorsTabs } from "../data/interiors";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -55,6 +57,29 @@ export default function InteriorsPage() {
                 <p className="text-sm font-medium text-white md:text-base">{service}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-dark-800/50 py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dark-700/50 bg-dark-900/30 px-6 py-10 text-center md:gap-6 md:py-14">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-500/10 text-brand-400">
+              <Phone size={20} />
+            </div>
+            <h3 className="font-display text-2xl font-bold text-white md:text-3xl">
+              Book an Interiors Consultation
+            </h3>
+            <p className="max-w-md text-sm font-light text-dark-400 md:text-base">
+              Speak directly with our interior design team about your project.
+            </p>
+            <MagneticButton
+              as="a"
+              href="tel:+919063888137"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-8 py-3.5 font-display text-xs font-semibold text-white transition-all hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/20 md:py-4 md:text-sm"
+            >
+              +91 90638 88137
+            </MagneticButton>
           </div>
         </div>
       </section>
