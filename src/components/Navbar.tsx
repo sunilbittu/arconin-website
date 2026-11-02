@@ -14,7 +14,7 @@ interface NavbarProps {
 }
 
 const desktopItems = navItems.filter((item) =>
-  ["About", "Architecture", "Construction", "Interiors", "Innovation", "Projects", "Gallery"].includes(item.label)
+  ["About", "Architecture", "Construction", "Interiors", "Innovation", "Projects"].includes(item.label)
 );
 
 const mobileItems = navItems;

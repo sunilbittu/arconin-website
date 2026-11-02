@@ -26,10 +26,9 @@ Only `HomePage` receives the `loaded` prop; other pages wrap themselves in `comp
 
 ### Data layer (`src/data/`)
 
-Service pages (Architecture, Construction, Interiors, Innovation, Consulting, Technology, Careers, Projects, Gallery) are **data-driven**: each `src/data/<service>.ts` exports typed content (tabs, project lists, etc.) consumed by the matching `src/pages/<Service>Page.tsx`. To add or edit service content, edit the data file — the page component is usually a thin renderer.
+Service pages (Architecture, Construction, Interiors, Innovation, Consulting, Technology, Careers, Projects) are **data-driven**: each `src/data/<service>.ts` exports typed content (tabs, project lists, etc.) consumed by the matching `src/pages/<Service>Page.tsx`. To add or edit service content, edit the data file — the page component is usually a thin renderer.
 
 - Sub-service navigation uses `?tab=...` query strings (see `src/data/navigation.ts`). Pages read the tab from the URL and render the matching section.
-- Gallery images live in `src/data/gallery.ts` and are served from Cloudinary (cloud name `df6z9onej`). Use the `cloudinaryUrl()` / `cloudinaryThumb()` helpers — they bake in `q_auto,f_auto` and width. Do not hardcode Cloudinary URLs.
 
 ### Animation & 3D
 
